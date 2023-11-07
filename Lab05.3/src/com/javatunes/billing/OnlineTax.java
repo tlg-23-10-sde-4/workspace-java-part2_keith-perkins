@@ -10,7 +10,7 @@ package com.javatunes.billing;
 
 /**
  * Online orders are tax-free!
- * 
+ * <p>
  * TODO: implement this algorithm.
  */
 public class OnlineTax {
