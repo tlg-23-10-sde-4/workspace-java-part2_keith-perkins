@@ -23,7 +23,7 @@ public class OrderTaxTest {
         cart1 = new ShoppingCart<Product>();  // $20.00
         cart1.addItem(new MusicItem("CD-501"));
         cart1.addItem(new MusicItem("CD-519"));
-
+                                                      //  <Product> not needed
         cart2 = new ShoppingCart<Product>();  // $120.00
         cart2.addItem(new MusicItem("CD-511"));
         cart2.addItem(new MusicItem("CD-512"));
@@ -42,21 +42,41 @@ public class OrderTaxTest {
      *       factory to create the Orders.
      *     - If you're injecting the TaxCalculator from the client, do so here.
      * 4. Verify that the order's tax is as expected.
-     * <p>
+     *
      * TEST NOTE: you can split the two orders per location into two test cases, if desired.
      */
     @Test
     public void testTaxOnlineOrder() {
+        Order order1 = new Order("order-1", Location.ONLINE);
+        order1.processCart(cart1);
+        assertEquals(0.0, order1.getTax(), .001);
+
+        Order order2 = new Order("order-2", Location.ONLINE);
+        order2.processCart(cart2);
+        assertEquals(0.0, order2.getTax(), .001);
 
     }
 
     @Test
     public void testTaxEuropeOrder() {
+        Order order1 = new Order ("Order-1", Location.EUROPE);
+        order1.processCart(cart1);
+        assertEquals(3.4, order1.getTax(), .001);
 
+        Order order2 = new Order ("Order-2", Location.EUROPE);
+        order2.processCart(cart2);
+        assertEquals(25.4, order2.getTax(), .001);
     }
 
     @Test
     public void testTaxUSAOrder() {
+        Order order1 = new Order("order-1", Location.USA);
+        order1.processCart(cart1);
+        assertEquals(0.0, order1.getTax(), .001);
+
+        Order order2 = new Order("order-2", Location.USA);
+        order2.processCart(cart2);
+        assertEquals(10.0, order2.getTax(), .001);
 
     }
 }

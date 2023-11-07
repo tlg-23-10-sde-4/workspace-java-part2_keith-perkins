@@ -8,13 +8,33 @@
  */
 package com.javatunes.product;
 
+import com.javatunes.billing.Location;
+import com.javatunes.billing.TaxCalculator;
+import com.javatunes.billing.TaxCalculatorFactory;
+
 import java.util.Collection;
 
 public class Order {
-    private String id;
+    private final String id;
+    private final Location location;
+    private double cost;
 
-    public Order(String id) {
+
+    public Order(String id, Location location) {
         this.id = id;
+        this.location = location;
+    }
+
+    /*
+     * The TaxCalculator needed is a function of Location.
+     * we'll fetch it from a factory instead of "new OnlineTax()," etc., in here
+     *
+     * after the fetch, we can simply delegate to its taxamount() method to do the actual work
+     */
+
+    public double getTax() {
+        TaxCalculator calc = TaxCalculatorFactory.getTaxCalculator(getLocation());
+        return calc.taxAmount(getCost());
     }
 
     /**
@@ -22,6 +42,7 @@ public class Order {
      * get the items from the cart and iterate over them, print each item's product code
      * get cart total and print
      */
+
     public void processCart(ShoppingCart<? extends Product> cart) {
         System.out.println("Order: " + getId() + " contains the following:");
 
@@ -29,10 +50,21 @@ public class Order {
         for (Product product : cartItems) {
             System.out.println(product.getCode());
         }
-        System.out.println("Order Total: " + cart.total());
+
+        this.cost = cart.total();  //assign to field at top, it is needed for getTax()
+
+        System.out.println("Order Total: " + getCost());
     }
 
     public String getId() {
         return id;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }
