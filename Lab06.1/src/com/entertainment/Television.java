@@ -20,6 +20,8 @@ implements Comparable<Television> {
   private String brand;
   private int volume;
   private DisplayType display;
+
+  //Television HAS-A tuner
   private Tuner tuner = new Tuner();  // set up internally and used for channel management
   
   public Television() {
@@ -83,6 +85,10 @@ implements Comparable<Television> {
         "Allowed range: [" + MIN_CHANNEL + "," + MAX_CHANNEL + "].");
     }
   }
+
+  //STATIC NESTED CLASSES
+  //outside here, this is referred to as Television.Channel.Comparator
+
   
   public DisplayType getDisplay() {
     return this.display;
