@@ -27,15 +27,17 @@ public class Department {
   public void listEmployees() {
  //   for (Employee emp : employees) {    //removed for lambdas example
  //     System.out.println(emp);
-    employees.forEach(emp -> System.out.println(emp));
+
+    employees.forEach(System.out::println);//emp -> System.out.println(emp)
     }
 
   
   public void workEmployees() {
-  //  for (Employee emp : employees) {
-  //    emp.work();
-   employees.forEach(emp -> emp.work());
-    }
+      //  for (Employee emp : employees) {
+      //    emp.work();
+
+    employees.forEach(Employee::work);   //emp -> emp.work()
+  }
   
   /*
    * DONE: implement payEmployees() method by calling pay() on each Employee
@@ -43,10 +45,10 @@ public class Department {
    */
 
   public void payEmployees() {
-    // DONE
-    //for (Employee emp : employees) {
-     // emp.pay();
-    employees.forEach(emp -> emp.pay());
+       //for (Employee emp : employees) {
+      // emp.pay();
+
+    employees.forEach(emp -> emp.pay());  //emp ->emp.pay()
     }
 
   
