@@ -3,16 +3,20 @@ package com.duckrace;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /*
  * This is a lookup table of ids to student names.
  * When a duck wins for the first time, we need to find out who that is.
- * This lookup table could be hardcoded with the data, or we could read the data 
+ * This lookup table could be hardcoded with the data, or we could read the data
  * in from a file, so that no code changes would need to be made for each cohort.
  *
  * Map<Integer,String> studentIdMap;
- * 
+ *
  * Integer    String
  * =======    ======
  *    1       John
@@ -21,12 +25,12 @@ import java.util.*;
  *    4       Armando
  *    5       Sheila
  *    6       Tess
- * 
+ *
  *
  * We also need a data structure to hold the results of all winners.
  * This data structure should facilitate easy lookup, retrieval, and storage.
  *
- * Map<Integer,DuckRacer> racerMap;  // K:integer, V:DuckRacer
+ * Map<Integer,DuckRacer> racerMap;  // K: Integer, V: DuckRacer
  *
  * Integer    DuckRacer
  * =======    =========
@@ -38,73 +42,56 @@ import java.util.*;
  *   17       17    Dom        1    DEBIT_CARD
  */
 
-class Board {
+public class Board {
     private final Map<Integer,String> studentIdMap = loadStudentIdMap();
     private final Map<Integer,DuckRacer> racerMap  = new TreeMap<>();
 
     /*
-     *  Updates the board (racerMap) by making a DuckRacer "win".
+     * Updates the board (racerMap) by making a DuckRacer "win."
      *
      * This could mean fetching an existing DuckRacer from racerMap (id is in the map),
      * or we might need to create a new DuckRacer (id is not in the map),
-     * then we need to put that new DuckRacer in the map, and make it "win".
+     * then we need to put that new DuckRacer in the map, and make it "win."
      *
-     * Either way, it needs to "win"
+     * Either way, it needs to "win."
      */
-
     public void update(int id, Reward reward) {
+        DuckRacer racer = null;
 
-        if (racerMap.containsKey(id)) {  //id present, so fetch DuckRacer next to it
-            DuckRacer racer = racerMap.get(id);
-            racer.win(reward);
+        if (racerMap.containsKey(id)) {  // id present, so fetch DuckRacer next to it
+            racer = racerMap.get(id);
         }
-        else {      // id not present, so here we create a new duckracer
-            DuckRacer racer = new DuckRacer(id, studentIdMap.get(id));
-            racerMap.put(id, racer);        //easy to forget this step
-            racer.win(reward);
+        else {                           // id not present, so create new DuckRacer
+            racer = new DuckRacer(id, studentIdMap.get(id));
+            racerMap.put(id, racer);     // easy to forget this step
         }
+        racer.win(reward);               // either way, it needs to "win"
     }
 
-    /*
-     *  TODO: render the data show it looks like the board you see every day
-     * id       name    wins    rewards
-     * -----    -----   ----    -------
-     * 1        aaron   2       prizes, debit
-     *
-     */
-
-    //TESTING PURPOSES ONLY
-    void show() {
-     Collection<DuckRacer> racers = racerMap.values();
-
-     for (DuckRacer racer: racers) {
-         System.out.printf("%s %s  %s  %s\n", racer.getId(), racer.getName(), racer.getWins(), racer.getRewards());     //toString auto called
-         }
+    public Collection<DuckRacer> duckRacers() {
+        return racerMap.values();
     }
 
-    // TESTING PURPOSES ONLY
-    void dumpStudentIdMap() {
-        System.out.println(studentIdMap);
+    public int maxId() {
+        return studentIdMap.size();
     }
 
-    private Map<Integer, String> loadStudentIdMap() {
-        Map<Integer, String> idMap = new HashMap<>();
+    private Map<Integer,String> loadStudentIdMap() {
+        Map<Integer,String> idMap = new HashMap<>();
 
         try {
             // read all lines from conf/student-ids.csv into a List<String>
             List<String> lines = Files.readAllLines(Path.of("conf/student-ids.csv"));
 
-            // for each line, split into "tokens," i.e., "1,Aaron" is split into "1" and "Aaron"
+            // for each line, split it into "tokens," i.e., "1,Aaron" is split into "1" and "Aaron"
             for (String line : lines) {
-                String[] tokens = line.split(","); //tokens[0] is "1" and tokens[1] is "Aaron"
-
+                String[] tokens = line.split(",");  // tokens[0] is "1" and tokens[1] is "Aaron"
                 idMap.put(Integer.valueOf(tokens[0]), tokens[1]);
             }
         }
         catch (IOException e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
         return idMap;
     }
-
 }

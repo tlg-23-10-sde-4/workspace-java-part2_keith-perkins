@@ -1,5 +1,5 @@
 package com.duckrace;
 
 public enum Reward {
-    DEBIT, PRIZES
+    DEBIT_CARD, PRIZES
 }
